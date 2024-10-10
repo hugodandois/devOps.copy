@@ -81,21 +81,25 @@ module.exports = router;
 
 function loginUserFoundActive(req, userFound, res) {
     if (bcrypt.compareSync(req.body.userPassword, userFound.password)) {
-        console.log("password correct");
-        req.session.login = req.body.userLogin;
-        req.session.connected = true;
-        if (userFound.admin) {
-            req.session.admin = true;
-            res.redirect('/admin');
-        } else {
-            req.session.admin = false;
-            res.redirect('/members');
-        }
+        matchingPWDlogin(req, userFound, res);
     }
     else {
         console.log("bad password");
         req.session.errors = "Mot de passe incorrect";
         res.redirect('/users');
+    }
+}
+
+function matchingPWDlogin(req, userFound, res) {
+    console.log("password correct");
+    req.session.login = req.body.userLogin;
+    req.session.connected = true;
+    if (userFound.admin) {
+        req.session.admin = true;
+        res.redirect('/admin');
+    } else {
+        req.session.admin = false;
+        res.redirect('/members');
     }
 }
 
