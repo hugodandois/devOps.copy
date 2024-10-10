@@ -28,29 +28,11 @@ router.post('/login', (req, res, next) => {
             res.redirect('/users');
         }
         else {
-            if (bcrypt.compareSync(req.body.userPassword, userFound.password)) {
-                console.log("password correct");
-                req.session.login = req.body.userLogin;
-                req.session.connected = true;
-                if (userFound.admin) {
-                    req.session.admin = true;
-                    res.redirect('/admin');
-                } else {
-                    req.session.admin = false;
-                    res.redirect('/members');
-                }
-            }
-            else {
-                console.log("bad password");
-                req.session.errors = "Mot de passe incorrect";
-                res.redirect('/users');
-            }
+            loginUserFoundActive(req, userFound, res);
         }
     }
     else {
-        console.log("bad user");
-        req.session.errors = "Utilisateur inconnu";
-        res.redirect('/users');
+        manageBadUser(req, res);
     }
 });
 
@@ -96,3 +78,29 @@ router.post('/add', (req, res, next) => {
 });
 
 module.exports = router;
+
+function loginUserFoundActive(req, userFound, res) {
+    if (bcrypt.compareSync(req.body.userPassword, userFound.password)) {
+        console.log("password correct");
+        req.session.login = req.body.userLogin;
+        req.session.connected = true;
+        if (userFound.admin) {
+            req.session.admin = true;
+            res.redirect('/admin');
+        } else {
+            req.session.admin = false;
+            res.redirect('/members');
+        }
+    }
+    else {
+        console.log("bad password");
+        req.session.errors = "Mot de passe incorrect";
+        res.redirect('/users');
+    }
+}
+
+function manageBadUser(req, res) {
+    console.log("bad user");
+    req.session.errors = "Utilisateur inconnu";
+    res.redirect('/users');
+}
