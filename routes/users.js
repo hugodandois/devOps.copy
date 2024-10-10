@@ -104,7 +104,7 @@ function matchingPWDlogin(req, userFound, res) {
 }
 
 function manageBadUser(req, res) {
-    console.log("bad user");
+    console.log("robignoule");
     req.session.errors = "Utilisateur inconnu";
     res.redirect('/users');
 }
